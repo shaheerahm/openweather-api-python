@@ -1,15 +1,16 @@
 from os import read
 from tkinter import *
-from typing import Text
 import requests
 import time
 
-with open("D:\Learning and Projects\OW API - Copy\key_api.txt") as f:
+with open('keyapi.txt') as f:
              line = f.readline()
 
-#def click():
-# entered_text=cityName.get()
-
+def click():
+    try:
+         entered_text = getWeather(window)
+    except:
+        pass
 
 def getWeather(window):
 
@@ -17,65 +18,112 @@ def getWeather(window):
     api = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=" + line
     json_data = requests.get(api).json()
     
-    condition = json_data['weather'][0]['description'].title()
-    infoCity = json_data['name']
-    infoCountry = json_data['sys']['country']
-    temp = int(json_data['main']['temp'])
-    min_temp = int(json_data['main']['temp_min'])
-    max_temp = int(json_data['main']['temp_max'])
-    pressure = json_data['main']['pressure']
-    humidity = json_data['main']['humidity']
-    visibility = json_data['visibility']
-    cloud = json_data['clouds']['all']
+    condition1 = json_data['weather'][0]['description'].title()
+    infoCity1 = json_data['name']
+    infoCountry1 = json_data['sys']['country']
+    temp1 = int(json_data['main']['temp'])
+    min_temp1 = int(json_data['main']['temp_min'])   
+    max_temp1 = int(json_data['main']['temp_max'])
+    pressure1 = json_data['main']['pressure']
+    humidity1 = json_data['main']['humidity']
+    visibility1 = json_data['visibility']
+    cloud1 = json_data['clouds']['all']
+    wind1 = json_data['wind']['speed']
+    sunrise1 = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunrise'] - 21600))
+    sunset1 = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] - 21600))
 
-    wind = json_data['wind']['speed']
-
-    sunrise = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunrise'] - 21600))
-    sunset = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] - 21600))
-
-    CountryData = infoCity + ", " + infoCountry
-
-    final_info = condition + ", " + str(temp) + "°C"
-    final_data = "\n" + "Max Temp: " + str(max_temp) + " °C\n" + "Min Temp: " + str(min_temp) + " °C\n" +  "Pressure: " + str(pressure)  + " hPa\n" +  "Humidity: " + str(humidity) + "%\n" +   "Visibility: " + str(visibility) + "%\n" +  "Cloudiness: " + str(cloud) + "%\n" +  "Wind Speed: " + str(wind) + " ms\n" +  "Sunrise: " + str(sunrise) + " AM\n" +  "Sunset: " + str(sunset)  + " PM"
-    
-    CityLabel.config(text = CountryData)
-    label1.config(text = final_info)
-    label2.config(text = final_data)
-
-
+    CountryData1 = infoCity1 + ", " + infoCountry1
+    infoCity.config( text = CountryData1)
+    tempCurrent.config(text= condition1+ ", "+ str(temp1) +" °C")
+    min_tempCurrent.config(text= str(min_temp1) + " °C")
+    max_tempCurrent.config(text=str(max_temp1)+ " °C" )
+    pressureCurrent.config(text= str(pressure1) + " hpa")
+    humidityCurrent.config(text=str(humidity1)+ " %")
+    visibilityCurrent.config(text=str(visibility1)+ " %")
+    cloudCurrent.config(text=str(cloud1)+ " %")
+    windCurrent.config(text=str(wind1)+ " m/s")
+    sunriseCurrent.config(text=str(sunrise1)+ " AM")
+    sunsetCurrent.config(text=str(sunset1)+ " PM")
 
 # window is the window
 window = Tk()
-window.geometry("550x500")
+window.geometry("500x520") #se 320x568
 window.title("Weather App")
-window.configure(background="black")
+window.resizable(0,0)
+#window Icon
+p1 = PhotoImage(file = 'icon.png')
+# Setting icon of master window
+window.iconphoto(False, p1)
+window.configure(background="#1A1A1A")
 
-# font style
-#f = ("Neue Helvetica", 15)
-#t = ("Neue Helvetica", 35, "bold")
-
-
+header_top = Label(text="Weather Today", font=("Inter", 25, "bold"), fg="#4FC0B6", bg="#1A1A1A")
+header_top.place(x=0,y=0,height=40,width=500)
 #Textfield for the input
-cityName = Entry(window, justify='center', font = ("Neue Helvetica", 35, "bold"), bg="grey", fg="white")
-cityName.pack(pady = 20)
+cityName = Entry(window, justify='center', font = ("Inter", 35, "bold"), bg="grey", fg="white")
 cityName.focus()
 cityName.bind('<Return>', getWeather)
+cityName.place(x=0, y=40, width=400, height=40)
+# Creating button
+searchButton = Button(window, text = 'Search', font=("Inter",12, "bold"), fg="white", bg="#4FC0B6", command=click)
+searchButton.place(x=400, y=40, width=100, height=40)
 
-#tk.Button(window, text="SUBMIT", width=6, command=click)
 
-
-# City info
-CityLabel = Label(window, font = ("Neue Helvetica", 25), bg="black", fg="white", justify="left")
-CityLabel.pack()
-
-# Label1 shows the weather centigrade
-label1 = Label(window, font = ("Neue Helvetica", 30), bg="black", fg="white", justify="left")
-label1.pack()
-
-# Label2 shows the more Weather info
-label2 = Label(window, font = ("Neue Helvetica", 15), bg="black", fg="white", justify="left")
-label2.pack()
-
+# City name Label and City name gotten from Search
+#CityLabel = Label(window, text="City: ", font = ("Inter", 15, "bold"), justify='left')
+#CityLabel.place(x=0,y=80,width=150, height=40)
+infoCity = Label(window, font=("Inter", 30, "bold"), fg="#4FC0B6")
+infoCity.place(x=0,y=80,height=40,width=500)
+###############################################################################
+temp = Label(window,text="Temp: ", font=("Inter", 15, "bold"), justify='left')
+temp.place(x=0,y=120,height=40,width=150)
+tempCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+tempCurrent.place(x=150,y=120,height=40,width=350)
+###############################################################################
+min_temp = Label(window,text="Min Temp: ", font=("Inter", 15, "bold"), justify='left')
+min_temp.place(x=0,y=160,height=40,width=150)
+min_tempCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+min_tempCurrent.place(x=150,y=160,height=40,width=350)
+###############################################################################
+max_temp = Label(window, text="Max Temp: ", font=("Inter", 15, "bold"), justify='left')
+max_temp.place(x=0,y=200,height=40,width=150)
+max_tempCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+max_tempCurrent.place(x=150,y=200,height=40,width=350)
+###############################################################################
+pressure = Label(window,text="Pressure: ", font=("Inter", 15, "bold"), justify='left')
+pressure.place(x=0,y=240,height=40,width=150)
+pressureCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+pressureCurrent.place(x=150,y=240,height=40,width=350)
+###############################################################################
+humidity = Label(window,text="Humidity: ", font=("Inter", 15, "bold"), justify='left')
+humidity.place(x=0,y=280,height=40,width=150)
+humidityCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+humidityCurrent.place(x=150,y=280,height=40,width=350)
+###############################################################################
+visibility = Label(window,text="Visibility: ", font=("Inter", 15, "bold"), justify='left')
+visibility.place(x=0,y=320,height=40,width=150)
+visibilityCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+visibilityCurrent.place(x=150,y=320,height=40,width=350)
+###############################################################################
+cloud = Label(window,text="Cloud: ", font=("Inter", 15, "bold"), justify='left')
+cloud.place(x=0,y=360,height=40,width=150)
+cloudCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+cloudCurrent.place(x=150,y=360,height=40,width=350)
+###############################################################################
+wind = Label(window,text="Wind: ", font=("Inter", 15, "bold"), justify='left')
+wind.place(x=0,y=400,height=40,width=150)
+windCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+windCurrent.place(x=150,y=400,height=40,width=350)
+###############################################################################
+sunrise = Label(window,text="Sunrise: ", font=("Inter", 15, "bold"), justify='left')
+sunrise.place(x=0,y=440,height=40,width=150)
+sunriseCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+sunriseCurrent.place(x=150,y=440,height=40,width=350)
+###############################################################################
+sunset = Label(window,text="Sunset: ", font=("Inter", 15, "bold"), justify='left')
+sunset.place(x=0,y=480,height=40,width=150)
+sunsetCurrent = Label(window, font=("Inter", 15, "bold"), justify='left')
+sunsetCurrent.place(x=150,y=480,height=40,width=350)
+###############################################################################
+###################################################################################
 #main loop
 window.mainloop()
-
